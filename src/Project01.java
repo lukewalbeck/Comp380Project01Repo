@@ -5,8 +5,8 @@ public class Project01 {
 
         //until we can read in data for weights and values, just for testing currently
         int wb = 0;
-        int[] weights = new int[3];
-        int[] values = new int[2];
+        int[][] weights = new int[63][7];
+        int[] values = new int[7];
         int alpha = 0;
         int theta = 0;
         int yin = 0;

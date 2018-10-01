@@ -1,5 +1,5 @@
 public class Perceptron {
-    int[] weights;
+    int[][] weights;
     int wb;
     int alpha;
     int theta;
@@ -9,7 +9,7 @@ public class Perceptron {
     int[] xArray;
 
     //Basic constructor with all modifiable data
-    Perceptron(int[] weights, int wb, int alpha, int theta, int yin, int y, int t, int[] xArray) {
+    Perceptron(int[][] weights, int wb, int alpha, int theta, int yin, int y, int t, int[] xArray) {
         this.weights = weights;
         this.wb = wb;
         this.alpha = alpha;
@@ -30,7 +30,9 @@ public class Perceptron {
     public int yinFunction() {
         int summation = this.wb;
         for(int i = 0; i < this.xArray.length; i++) { //this is making the fat assumption that both weights and xArray have the SAME length, probably shouldn't be in end code for this loop
-            summation += (this.weights[i]*this.xArray[i]);
+            for(int j = 0; j < this.weights.length; j++) {
+                summation += (this.weights[i][j] * this.xArray[i]);
+            }
         }
         if(summation > 0) {
             return 1;
@@ -42,6 +44,9 @@ public class Perceptron {
             return -1;
         }
     }
+
+
+
 
 
 }
