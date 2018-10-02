@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.lang.Math;
 
 
 public class Project01 {
@@ -7,7 +8,7 @@ public class Project01 {
 
         //until we can read in data for weights and values, just for testing currently
         int wb = 0;
-        int[][] weights = new int[63][7];
+        double[][] weights = new double[63][7];
         int[] values = new int[7];
         int alpha = 0;
         int theta = 0;
@@ -30,15 +31,23 @@ public class Project01 {
         sw = kb.nextInt();
 
         if(sw == 1)   {
-            System.out.println("Enter the training data file name:");
+            System.out.println("\nEnter the training data file name:");
             train_file = kb.nextLine();
             System.out.println("\nEnter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5:");
             init_weights = kb.nextInt();
-            if(init_weights == 0)   {
-                //Do a loop here to fill all the weights to 0
+            if(init_weights == 0)   {           //This loop initializes all weights to 0
+                for(int i = 0; i < 63; i++) {
+                    for(int j = 0; j < 7; j++) {
+                        weights[i][j] = 0;
+                    }
+                }
             }
-            else if(init_weights == 1)  {
-                //Do a loop here to fill all the weights randomly
+            else if(init_weights == 1)  {       //This loop initializes all weights to random values between -0.5 and 0.5
+                for(int i = 0; i < 63; i++) {
+                    for (int j = 0; j < 7; j++) {
+                        weights[i][j] = (Math.random() - 0.5);
+                    }
+                }
             }
             System.out.println("\nEnter the maximum number of training epochs:");
             max_epochs = kb.nextInt();
