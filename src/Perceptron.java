@@ -1,15 +1,15 @@
 public class Perceptron {
     int[][] weights;
-    int wb;
+    int[] wb;
     int alpha;
     int theta;
     int yin;
-    int y;
+    int[] y;
     int t;
     int[] xArray;
 
     //Basic constructor with all modifiable data
-    Perceptron(int[][] weights, int wb, int alpha, int theta, int yin, int y, int t, int[] xArray) {
+    Perceptron(int[][] weights, int[] wb, int alpha, int theta, int yin, int[] y, int t, int[] xArray) {
         this.weights = weights;
         this.wb = wb;
         this.alpha = alpha;
@@ -21,23 +21,43 @@ public class Perceptron {
     }
 
 
+
     /*
-    yin Function to determine the f(yin) that we discussed in class, takes both wb, wi's and xi's
-    to formulate the function:
-    yin = wb + x1w1 + x2w2 + ... + xnwn
-    and then throw that through f(yin) to return 3 possible values
+    S is SAMPLE DATA, T is TARGET, J denotes which pattern we are learning for
+    Currently at static 63 for # of neurons
      */
-    public int yinFunction() {
-        int summation = this.wb;
-        for(int i = 0; i < this.xArray.length; i++) { //this is making the fat assumption that both weights and xArray have the SAME length, probably shouldn't be in end code for this loop
-            for(int j = 0; j < this.weights.length; j++) {
-                summation += (this.weights[i][j] * this.xArray[i]);
+    public void learningAlgorithm(int[] s, int t, int j) {
+        boolean converged = false;
+        boolean changed;
+        while(!converged) {
+            changed = false;
+            for(int i = 0; i < 63; i++) {
+                xArray[i] = s[i];
+                y[j] = solveYFunction(weights, xArray, wb[j], j);
+
+                if(y[j] != t) { //change weights
+                    weights[i][j] = weights[i][j] + (theta*t*xArray[i]);
+                    wb[j] = wb[j] + (theta*t);
+                    changed = true;
+                }
+
+                if(i == 62 && !changed) { //if at the end of the loop nothing has been changed, stop the while statement
+                    converged = true;
+                }
+                //incorporate logic to tell when no weights were changed
             }
         }
-        if(summation > 0) {
+    }
+
+    public int solveYFunction(int[][] weights, int[] xArray, int wb, int j) {
+        int yin = wb;
+        for(int i = 0; i < 63; i++) {
+            yin += (xArray[i] * weights[i][j]);
+        }
+        if(yin > 1) {
             return 1;
         }
-        else if(summation == 0) {
+        else if (yin == 0) {
             return 0;
         }
         else {
