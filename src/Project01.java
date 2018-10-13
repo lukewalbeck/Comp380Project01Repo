@@ -7,10 +7,24 @@ import java.lang.Math;
 
 public class Project01 {
     public static void main(String[] args) {
-        System.out.println("Test: " + patternFinder("SampleData.txt"));
-        int[] test = sampleArrayData("SampleData.txt");
+        int j = patternFinder("SampleData.txt");
+        int[] s = sampleArrayData("SampleData.txt");
+
+        double[][] weights = new double[7][64];
+        double[] wb = new double[7];
+        int alpha = 0;
+        int theta = 0;
+        int yin = 0;
+        int t = 0;
+        int[] y = new int[7];
+        int[] xArray = new int[64];
+        int threshold = 0;
+        boolean changed = true;
+
+        Perceptron perceptron = new Perceptron(weights, wb, alpha, theta, yin, y, t, xArray, threshold);
 
 
+        perceptron.learningAlgorithm(s, 1, j);
 
     }
 
@@ -128,7 +142,7 @@ public class Project01 {
                 }
                 else {
                     String[] lineArray = line.split("\\s+");
-                    if(lineArray[0].equals("")) {
+                    if(lineArray[0].equals("")) { //fucking regex won't work for first character if 1 is positive
                         String[] temp = Arrays.copyOfRange(lineArray, 1, lineArray.length);
                         lineArray = temp;
                     }

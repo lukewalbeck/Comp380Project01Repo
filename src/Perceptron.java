@@ -1,15 +1,16 @@
 public class Perceptron {
-    int[][] weights;
-    int[] wb;
+    double[][] weights;
+    double[] wb;
     int alpha;
     int theta;
     int yin;
     int[] y;
     int t;
     int[] xArray;
+    int threshold;
 
     //Basic constructor with all modifiable data
-    Perceptron(int[][] weights, int[] wb, int alpha, int theta, int yin, int[] y, int t, int[] xArray) {
+    Perceptron(double[][] weights, double[] wb, int alpha, int theta, int yin, int[] y, int t, int[] xArray, int threshold) {
         this.weights = weights;
         this.wb = wb;
         this.alpha = alpha;
@@ -18,6 +19,7 @@ public class Perceptron {
         this.y = y;
         this.t = t;
         this.xArray = xArray;
+        this.threshold = threshold;
     }
 
 
@@ -31,17 +33,23 @@ public class Perceptron {
         boolean changed;
         while(!converged) {
             changed = false;
-            for(int i = 0; i < 63; i++) {
+            for(int i = 0; i < 64; i++) {
                 xArray[i] = s[i];
                 y[j] = solveYFunction(weights, xArray, wb[j], j);
 
                 if(y[j] != t) { //change weights
-                    weights[i][j] = weights[i][j] + (theta*t*xArray[i]);
+
+                    weights[j][i] = weights[j][i] + (theta*t*xArray[i]);
+
+
                     wb[j] = wb[j] + (theta*t);
+
+
                     changed = true;
+
                 }
 
-                if(i == 62 && !changed) { //if at the end of the loop nothing has been changed, stop the while statement
+                if(i == 63 && !changed) { //if at the end of the loop nothing has been changed, stop the while statement
                     converged = true;
                 }
                 //incorporate logic to tell when no weights were changed
@@ -49,10 +57,10 @@ public class Perceptron {
         }
     }
 
-    public int solveYFunction(int[][] weights, int[] xArray, int wb, int j) {
-        int yin = wb;
-        for(int i = 0; i < 63; i++) {
-            yin += (xArray[i] * weights[i][j]);
+    public int solveYFunction(double[][] weights, int[] xArray, double wb, int j) {
+        double yin = wb;
+        for(int i = 0; i < 64; i++) {
+            yin += (xArray[i] * weights[j][i]);
         }
         if(yin > 1) {
             return 1;
