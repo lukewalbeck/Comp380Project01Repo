@@ -3,24 +3,38 @@ import java.util.Arrays;
 public class Perceptron{
     int[][] samp_dat;
     double[][] weights;
-    int[] bias_w;
+    double[] bias_w;
     int[][] target;
     int[] outputs;
+    double alph;
+    double thet;
+    double thresh;
+    int max_epchs;
 
-    public Perceptron(int[][] samp, double[][] w, int[] bias, int[][] tar, int[] out) {
+    public Perceptron(int[][] samp, double[][] w, double[] bias, int[][] tar, int[] out, double alpha, double theta, double threshold, int max_epochs) {
         samp_dat = samp;
         weights = w;
         bias_w = bias;
         target = tar;
         outputs = out;
+        alph = alpha;
+        thet = theta;
+        thresh = threshold;
+        max_epchs = max_epochs;
+
+
     }
 
-    public void learn() {
+    public int learn() {
         boolean converged = false;
+        int curr_count = 0;
 
-        int count = 0;
         while(!converged)   {
-            count++;
+            if(curr_count > max_epchs)  {
+                System.out.println("The training data set did not converge.  The program will now quit.");
+                System.exit(0);
+            }
+            curr_count++;
             double maxWeightChange = 0;
             //Compute output vector per pattern
             for(int i = 0; i < 21; i++) {
@@ -44,13 +58,15 @@ public class Perceptron{
 
 
 
-                    if (i == 20 && maxWeightChange < 0.1) {
+                    if (i == 20 && maxWeightChange < thresh) {
                         converged = true;
+                        //This is where I would put the FileWriter method writeWeights
+                        return curr_count;
                     }
                 }
             }
         }
-
+        return 0;
     }
 
 
@@ -73,11 +89,10 @@ public class Perceptron{
             for(int k = 0; k < 63; k++) {
                 y_in_j += samp_dat[i][k] * weights[j][k];
             }
-            //TODO: theta change
-            if(y_in_j > 1) {
+            if(y_in_j > thet) {
                 outputs[j] = 1;
             }
-            else if(y_in_j < -1) {
+            else if(y_in_j < -thet) {
                 outputs[j] = -1;
             }
             else {
@@ -91,18 +106,21 @@ public class Perceptron{
     public double determineEquality(int i, int j) {
         double maxWeightChange = 0;
         if(!Arrays.equals(outputs, target[i])) {
-//            for(int j = 0; j < 7; j++) {
-                //TODO: add alpha instead of 1
-                bias_w[j] = bias_w[j] + (1 * target[i][j]);
+                bias_w[j] = bias_w[j] + (alph * target[i][j]);
                 for(int k = 0; k < 63; k++) {
-                    double weightChange = (1 * target[i][j] * samp_dat[i][k]);
+                    double weightChange = (alph * target[i][j] * samp_dat[i][k]);
                     weights[j][k] = weights[j][k] + weightChange;
                     if(weightChange > maxWeightChange) {
                         maxWeightChange = weightChange;
                     }
                 }
-//            }
         }
         return maxWeightChange;
     }
+
+    public void writeWeights(double[][] weights)
+    {
+        int hope = 1;
+    }
 }
+
