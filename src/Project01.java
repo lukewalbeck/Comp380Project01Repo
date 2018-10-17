@@ -7,45 +7,18 @@ import java.lang.Math;
 
 public class Project01 {
     public static void main(String[] args) {
-        int[] s = sampleArrayData("SampleData.txt", 1);
-        int[][] sep_s = new int[21][63];
-        for(int kk = 0; kk < 21; kk++)  {
-            for(int jj = 0; jj < 63; jj++)  {
-                sep_s[kk][jj] = s[(kk*63)+jj];
-            }
-        }
 
-
-        double[][] weights = new double[7][63];
-        int[] bias_w = new int[7];
-        int[][] target = new int[21][7];
-        int[] outputs = new int[7];
-
-        Perceptron perc = new Perceptron(sep_s, weights, bias_w, target, outputs);
-        perc.learn();
-
-    }
-
-
-    public static void programCall() {
-
-        //until we can read in data for weights and values, just for testing currently
-        int wb = 0;
-        double[][] weights = new double[7][64];
-        int[] values = new int[7];
-        int alpha = 0;
-        int theta = 0;
-        int yin = 0;
-        int t = 0;
-        int y = 0;
-        int threshold = 0;
+        double alpha = 0;
+        double theta = 0;
+        double threshold = 0;
         int max_epochs = 0;
-        int init_weights = 0;
-        int sw = 0;     //sw is short for start weights if there is a pre-done weights file
-        String train_file;
+        int init_weights;
+        int test_deploy;
+        int sw;     //sw is short for start weights if there is a pre-done weights file
+        String train_file = "";
         String input_weights;
         String output_weights;
-
+        double[][] weights = new double[7][63];
 
         Scanner kb = new Scanner(System.in);
 
@@ -60,14 +33,14 @@ public class Project01 {
             init_weights = kb.nextInt();
             if(init_weights == 0)   {           //This loop initializes all weights to 0
                 for(int i = 0; i < 7; i++) {
-                    for(int j = 0; j < 64; j++) {
+                    for(int j = 0; j < 63; j++) {
                         weights[i][j] = 0;
                     }
                 }
             }
             else if(init_weights == 1)  {       //This loop initializes all weights to random values between -0.5 and 0.5
                 for(int i = 0; i < 7; i++) {
-                    for (int j = 0; j < 64; j++) {
+                    for (int j = 0; j < 63; j++) {
                         weights[i][j] = (Math.random() - 0.5);
                     }
                 }
@@ -77,28 +50,50 @@ public class Project01 {
             System.out.println("\nEnter a file name to save the trained weight settings:");
             output_weights = kb.nextLine();
             System.out.println("\nEnter the learning rate alpha from 0 to 1 but not including 0");
-            alpha = kb.nextInt();
+            alpha = kb.nextDouble();
             System.out.println("\nEnter the threshold theta:");
-            theta = kb.nextInt();
+            theta = kb.nextDouble();
             System.out.println("\nEnter the threshold to be used for measuring weight changes:");
-            threshold = kb.nextInt();
+            threshold = kb.nextDouble();
         }
         else if(sw == 2)     {
             System.out.println("Enter the trained weight settings input data file name:");
             input_weights = kb.nextLine();
-            //Put a function here to read in that file to assign weights
+            //Put a function here to read in the file to assign weights
+        }
+
+
+        int[] s = sampleArrayData(train_file, 1);
+        int[][] sep_s = new int[21][63];
+        for(int kk = 0; kk < 21; kk++)  {
+            for(int jj = 0; jj < 63; jj++)  {
+                sep_s[kk][jj] = s[(kk*63)+jj];
+            }
         }
 
 
 
+        double[] bias_w = new double[7];
+        int[][] target = new int[21][7];
+        int[] outputs = new int[7];
 
-        //call perceptron class and run table, displaying it will be called in this class
-        //Perceptron test = new Perceptron(weights,wb,alpha,theta,yin,y,t,values);
-        //int fyin = test.yinFunction();
-        //System.out.println(fyin);
+        Perceptron perc = new Perceptron(sep_s, weights, bias_w, target, outputs, alpha, theta, threshold, max_epochs);
+        int occur_epochs = perc.learn();
+
+        System.out.println("Training converged after " + occur_epochs + " epochs.");
+        System.out.println("Enter 1 to test/deploy using a testing/deploying data file, enter 2 to quit.");
+        test_deploy = kb.nextInt();
+        if(test_deploy == 1)
+        {
+            //Have code here to accept the testing data and use the weights on it
+        }
+        else
+        {
+            System.out.println("I hope you enjoyed my perceptron net!");
+            System.exit(0);
+        }
+
     }
-
-
 
     public static int[] sampleArrayData(String fileName, int epoch) {
         try{
