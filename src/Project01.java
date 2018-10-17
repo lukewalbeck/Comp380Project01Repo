@@ -7,30 +7,27 @@ import java.lang.Math;
 
 public class Project01 {
     public static void main(String[] args) {
-        int j = patternFinder("SampleData.txt");
-        int[] s = sampleArrayData("SampleData.txt");
-
-        double[][] weights = new double[7][64];
-        double[] wb = new double[7];
-        int alpha = 0;
-        int theta = 0;
-        int yin = 0;
-        int t = 0;
-        int[] y = new int[7];
-        int[] xArray = new int[64];
-        int threshold = 0;
-        boolean changed = true;
-
-        Perceptron perceptron = new Perceptron(weights, wb, alpha, theta, yin, y, t, xArray, threshold);
+        int[] s = sampleArrayData("SampleData.txt", 1);
+        int[][] sep_s = new int[21][63];
+        for(int kk = 0; kk < 21; kk++)  {
+            for(int jj = 0; jj < 63; jj++)  {
+                sep_s[kk][jj] = s[(kk*63)+jj];
+            }
+        }
 
 
-        perceptron.learningAlgorithm(s, 1, j);
+        double[][] weights = new double[7][63];
+        int[] bias_w = new int[7];
+        int[][] target = new int[21][7];
+        int[] outputs = new int[7];
+
+        Perceptron perc = new Perceptron(sep_s, weights, bias_w, target, outputs);
+        perc.learn();
 
     }
 
 
     public static void programCall() {
-        System.out.println("My name is lubie and I am gay");
 
         //until we can read in data for weights and values, just for testing currently
         int wb = 0;
@@ -102,47 +99,21 @@ public class Project01 {
     }
 
 
-    public static int patternFinder(String fileName) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            String line;
-            while((line = reader.readLine()) != null) {
-                if(line.equals("")) {
-                    line = reader.readLine();
-                    break;
-                }
-            }
-            String[] lineArray = line.split("\\s");
-            int patternNum = -1;
-            for(int i = 0; i < lineArray.length; i++) {
-                if(lineArray[i].equals("1")) {
-                    patternNum = i;
-                }
-            }
 
-            return patternNum;
-        }
-        catch(Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-
-        return -1;
-    }
-
-
-    public static int[] sampleArrayData(String fileName) {
+    public static int[] sampleArrayData(String fileName, int epoch) {
         try{
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String line;
-            int[] sampleData = new int[63];
+            int[] sampleData = new int[63 * 21];
             int count = 0;
+            int lineCount = 0;
             while((line = reader.readLine()) != null) {
                 if(line.equals("")) {
-                    break;
+                    lineCount++;
                 }
-                else {
+                else if(lineCount%2 == 0){
                     String[] lineArray = line.split("\\s+");
-                    if(lineArray[0].equals("")) { //fucking regex won't work for first character if 1 is positive
+                    if(lineArray[0].equals("")) {
                         String[] temp = Arrays.copyOfRange(lineArray, 1, lineArray.length);
                         lineArray = temp;
                     }
